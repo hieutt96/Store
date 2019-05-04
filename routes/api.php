@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/services/list', 'ServiceController@list')->name('service.list')->middleware('jwt');
+
+Route::post('/service-items', 'ServiceController@listItem')->name('service.list.item')->middleware('jwt');
