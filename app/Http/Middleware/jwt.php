@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Libs\RequestJWT;
+use App\Exceptions\AppException;
 
 class jwt
 {

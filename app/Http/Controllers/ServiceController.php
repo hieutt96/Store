@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Service;
 use App\ServiceItem;
 use App\Exceptions\AppException;
+use App\Libs\RequestJWT;
 
 class ServiceController extends Controller
 {
@@ -23,7 +24,7 @@ class ServiceController extends Controller
     			];
     		}
     		return $this->_responseJson(
-	 			$data, count($data),
+	 			$data, count($data)
 	    	);
     	}
     	throw new AppException(AppException::ERR_NO_SERVICE);
@@ -48,6 +49,10 @@ class ServiceController extends Controller
     				'amount' => $item->amount,
     			];
     		}
+            return $this->_responseJson(
+                $data, count($data)
+            );
     	}
+        throw new AppException(AppException::ERR_NO_SERVICE);
     }
 }
