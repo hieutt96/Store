@@ -42,6 +42,7 @@ class ServiceController extends Controller
     	if(count($serviceItems)) {
     		foreach($serviceItems as $item) {
     			$data [] = [
+                    'id' => $item->id,
     				'services_id' => $item->services_id,
     				'code' => $item->code,
     				'name' => $item->name,
@@ -54,5 +55,19 @@ class ServiceController extends Controller
             );
     	}
         throw new AppException(AppException::ERR_NO_SERVICE);
+    }
+
+    public function listAmount(Request $request) {
+
+        $request->validate([
+            'item_id' => 'required',
+        ]);
+        $item = ServiceItem::find($request->item_id);
+        if(!$item) {
+            throw new AppException(AppException::ERR_NO_SERVICE);
+            
+        }
+        $listAmount = explode(',', $item->amount);
+        return $this->_responseJson($listAmount);
     }
 }
