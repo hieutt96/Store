@@ -28,6 +28,7 @@ class AppException extends Exception{
 	const ERR_SERVICE_NOT_AMOUNT = 14;
 	const ERR_JWT_TIMEOUT = 15;
 	const ERR_BALANCE_ENOUGHT = 16;
+	const ERR_IP_NOT_ALLOWED = 17;
 
 	public $message = [];
 	public $code;

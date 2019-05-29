@@ -13,5 +13,6 @@ return
 		\App\Exceptions\AppException::ERR_SERVICE_NOT_AMOUNT => 'Dịch vụ không có số tiền vừa chọn',
 		\App\Exceptions\AppException::ERR_JWT_TIMEOUT => 'Jwt hết hạn',
 		\App\Exceptions\AppException::ERR_BALANCE_ENOUGHT => 'Số dư tài khoản không đủ',
+		\App\Exceptions\AppException::ERR_IP_NOT_ALLOWED => 'Địa chỉ IP máy chủ không cho phép',
 		
 	];

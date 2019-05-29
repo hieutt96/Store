@@ -54,7 +54,21 @@ class BaokimController extends Controller
 
     	$service = Service::find($request->service_id);
     	$item = Item::find($request->item_id);
-    	$services = (array) BaokimAPI::getListService();
+
+    	try {
+
+            $services = (array) BaokimAPI::getListService();
+        }catch(\Exception $e){
+            
+            $classException = (last(explode('\\', get_class($e))));
+
+            if(in_array($classException, ['ClientException'])) {
+
+                throw new AppException(AppException::ERR_IP_NOT_ALLOWED);
+                
+            }
+        }
+        
     	if(count($services)) {
 
     		foreach($services as $key => $value) {
@@ -98,7 +112,7 @@ class BaokimController extends Controller
 
     		if(isset($amount)) {
     			$mrcOrderId = time().'_mywallet';
-	    		if($request->phone) {
+	    		if($request->has('phone')) {
 	    			$phone = $request->phone;
 	    		}else {
 	    			$phone = null;
