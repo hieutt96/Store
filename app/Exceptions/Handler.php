@@ -70,6 +70,15 @@ class Handler extends ExceptionHandler
             ];
             return response()->json($json, 200);
         }
+        if(in_array($exception_class, ['ExpiredException'])) {
+            $json = [
+                'code' => AppException::ERR_JWT_TIMEOUT,
+                'message' => "Thời gian giao dịch hết hạn",
+                'count' => 0,
+                'data' => null,
+            ];
+            return response()->json($json, 200);
+        }
 
         return parent::render($request, $exception);
     }

@@ -25,3 +25,7 @@ Route::post('/service-items', 'ServiceController@listItem')->name('service.list.
 Route::get('/service-items/list-amount', 'ServiceController@listAmount')->name('service.list.amount')->middleware('jwt');
 
 Route::post('/buy/card-game', 'CardGameController@buy')->name('buy.card-game')->middleware('jwt');
+
+Route::get('/list-service-baokim', 'BaokimController@listService')->name('baokim.list.service');
+
+Route::post('/buy/service', 'BaokimController@buyService')->name('buy.service');

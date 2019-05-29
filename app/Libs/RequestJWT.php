@@ -16,11 +16,16 @@ class RequestJWT {
 
 			$data = JWT::decode($jwt, $secret, [self::ENCODE_ALG]);
 
-		}catch(SignatureInvalidException $e) {
-			throw new AppException(AppException::ERR_AUTHORIZATION, 'Lỗi giải mã jwt');
-			
-		}
+		}catch(\Exception $e) {
 
+			if(in_array(get_class($e), ['Firebase\JWT\SignatureInvalidException'])) {
+				throw new AppException(AppException::ERR_AUTHORIZATION, 'Lỗi giải mã jwt');
+			}
+			if(in_array(get_class($e), ['Firebase\JWT\ExpiredException'])) {
+
+				throw new AppException(AppException::ERR_JWT_TIMEOUT);
+			}
+		}
 		return $data;
 	}
 }

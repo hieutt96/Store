@@ -24,6 +24,10 @@ class AppException extends Exception{
 	const ERR_AUTHORIZATION = 10;
 	const REQUEST_EXPIRED = 11;
 	const ERR_NO_SERVICE = 12;
+	const ERR_SERVICE_NOT_FOUND = 13;
+	const ERR_SERVICE_NOT_AMOUNT = 14;
+	const ERR_JWT_TIMEOUT = 15;
+	const ERR_BALANCE_ENOUGHT = 16;
 
 	public $message = [];
 	public $code;
