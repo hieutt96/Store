@@ -82,13 +82,35 @@ class BaokimAPI {
         if($phone) {
             $data['phone'] = $phone;
         }
+        
+        // $response = RequestAPI::requestBaokim('POST', 'https://api.baokim.vn/payment/api/v4/vat/purchase', [
+        //     'query' => [
+        //         'jwt' => self::generateJwt($data),
+        //     ],
+        //     'form_params' => $data,
+        // ]);
+        // dd($response);
+        $response = [
 
-        $response = RequestAPI::requestBaokim('POST', 'https://api.baokim.vn/payment/api/v4/vat/purchase', [
-            'query' => [
-                'jwt' => self::generateJwt($data),
-            ],
-            'form_params' => $data,
-        ]);
+            "code" => 0,
+            "message" => [],
+            'count' => 0,
+            'data' => [
+
+                'success' => 1,
+                'mrc_order_id' => '1559188453_mywallet',
+                "service_item_id" => '1',
+                'service' => 'CARD_MOBILE',
+                'param' => 'VIETTEL',
+                'amount' => 10000,
+                'pin' => '618469865791143',
+                "seri" => "10004526431431",
+                "transaction_id" => "100174633",
+                "created_at" => "2019-05-30 10:54:14",
+            ]
+        ];
+        $response = (object) $response;
+
         if($response->code != AppException::ERR_NONE) {
 
             throw new AppException(AppException::ERR_SYSTEM);
@@ -106,7 +128,7 @@ class BaokimAPI {
             "iss" => env('API_KEY'),
             "aud" => 'https://api.baokim.vn/payment/vat',
             'exp'  => $expire,
-            'form_params' => $data
+            'form_params' => $data,
         );
 
         return JWT::encode($token, env('SECRET_KEY'), 'HS256');

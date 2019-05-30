@@ -29,7 +29,13 @@ class BaokimController extends Controller
     		'quantity' => 'required',
     		'amount' => 'required',
     		'password' => 'required',
-    	]);
+    	],[
+            'service_id.required' => 'Bạn chưa chọn dịch vụ. ',
+            'item_id.required' => 'Bạn chưa chọn loại thẻ. ',
+            'quantity.required' => ' ',
+            'amount.required' => 'Bạn chưa chọn số tiền. ',
+            'password.required' => 'Bạn chưa nhập password. '
+        ]);
     	
 		if($request->has('email')) {
 			$email = $request->email;
@@ -70,21 +76,23 @@ class BaokimController extends Controller
         }
         
     	if(count($services)) {
-
+            // dd($services);
     		foreach($services as $key => $value) {
 
     			if($value->info->code == $service->name) {
+                    // dd($service->name);
     				$items = $value->items;
     				$name = $service->name;
     				break;
     			}
     		}
+            // dd($items);
     	}else {
     		throw new AppException(AppException::ERR_SERVICE_NOT_FOUND);
     		
     	}
     	if(count($items) && isset($items)) {
-
+            // dd($items);
     		foreach($items as $key => $value) {
 
     			if($value->name == $item->code) {
@@ -101,7 +109,7 @@ class BaokimController extends Controller
     		$listAmount = $serviceItem->list_amount;
     		$name .= '.'.$serviceItem->name;
 
-    		$discount = $serviceItem->discount + $item->discount;
+    		$discount = abs($serviceItem->discount - $item->discount);
 
     		foreach(explode(',', $listAmount) as $key => $value) {
     			if($value == $request->amount/1000) {
@@ -111,34 +119,49 @@ class BaokimController extends Controller
     		}
 
     		if(isset($amount)) {
-    			$mrcOrderId = time().'_mywallet';
+    			$mrcOrderId = time().'_mywallet_hieutt96';
 	    		if($request->has('phone')) {
 	    			$phone = $request->phone;
 	    		}else {
 	    			$phone = null;
 	    		}
 	    		$amountDiscount = $amount*1000 + $discount*10*$amount;
-	    		dd($amountDiscount);
-	    		$response = BaokimAPI::buyService($mrcOrderId, $serviceItem->id, $amount, $phone);
+	    		// dd($amountDiscount);
+                // dd([$mrcOrderId, $serviceItem->id, $request->amount, $phone]);
+	    		$response = BaokimAPI::buyService($mrcOrderId, $serviceItem->id, $request->amount, $phone);
 
-	    		dd($response);
+	    		// dd($response->data);
 	    		$this->minusUser($userId, $amountDiscount);
 
 	    		$trs = new Transaction;
 	    		$trs->service_items_id = $serviceItem->id;
-	    		$trs->amount = $amount;
+	    		$trs->amount = $request->amount;
 	    		$trs->quantity = $request->quantity;
 	    		$trs->param = $name;
-	    		$trs->code = $response->data->pin;
-	    		$trs->serial = $response->data->seri;
+	    		$trs->code = $response->data['pin'];
+	    		$trs->serial = $response->data['seri'];
 	    		$trs->note = $name;
 	    		$trs->save();
 
-	    		$log = new Log;
-	    		$log->transaction_id = $transaction->id;
+	    		$log = new \App\Log;
+	    		$log->transactions_id = $trs->id;
 	    		$log->resCode = $response->code;
-	    		$log->dataRes = $response->data;
+	    		$log->dataRes = json_encode($response->data);
 	    		$log->save();
+
+                return $this->_responseJson([
+                    'mrc_order_id' => $response->data['mrc_order_id'],
+                    'service_item_id' => $response->data['service_item_id'],
+                    'service' => $response->data['service'],
+                    'param' => $response->data['param'],
+                    'amount' => $response->data['amount'],
+                    'pin' => $response->data['pin'],
+                    'seri' => $response->data['seri'],
+                    'transaction_id' => $response->data['transaction_id'],
+                    'created_at' => $response->data['created_at'],
+                    'fee' => $discount*10*$amount,
+                    'service_id' => $request->service_id,
+                ]);
 
     		}else {
     			throw new AppException(AppException::ERR_SERVICE_NOT_AMOUNT);
