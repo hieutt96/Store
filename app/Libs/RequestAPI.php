@@ -19,6 +19,9 @@ class RequestAPI {
 		$body = json_decode($rs->getBody()->getContents());
 		
 		if(!isset($body->code) || $body->code != AppException::ERR_NONE) {
+			if($body->code == AppException::ERR_BALANCE_ACCOUNT_SYSTEM_ENOUGHT) {
+	            throw new AppException(AppException::ERR_BALANCE_ACCOUNT_SYSTEM_ENOUGHT);
+	        }
 			$body->message = (array) $body->message;
 			$msg = '';
 			foreach($body->message as $message) {

@@ -51,13 +51,13 @@ class BaokimController extends Controller
 		$userId = MyUtils::getUserId($email);
 
 		$balance = MyUtils::getBalance($userId);
-
+        
 		if($balance < $request->amount * $request->quantity) {
 
 			throw new AppException(AppException::ERR_BALANCE_ENOUGHT);
 			
 		}
-
+        
     	$service = Service::find($request->service_id);
     	$item = Item::find($request->item_id);
 
